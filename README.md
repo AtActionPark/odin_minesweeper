@@ -19,3 +19,6 @@ The basic rules are that the player must flag every mine on the board without cl
 6. Create a timer which counts how long it takes for the user to win the game.
 7. Play!
 8. Push your solution to Github and include it below.
+
+
+[html preview](http://htmlpreview.github.io/?https://github.com/AtActionPark/odin_minesweeper/blob/master/index.html)

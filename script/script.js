@@ -55,6 +55,7 @@ function Board(bsize){
   this.grid = [[Cell]];
   this.minesPositions = [];
   this.timePassed = 0;
+  this.minesLeft = size;
   this.firstClick = false;
   this.generateBoard();
   this.generateMines();
@@ -62,6 +63,7 @@ function Board(bsize){
   this.render();
   clearTimeout(timeOut);
   this.displayTimer();
+  this.displayMines();
 }
 
 // Will create empty cells in the grid, and add them to the markup
@@ -138,6 +140,12 @@ Board.prototype.displayTimer = function(){
       $( '#time0' ).attr( 'src', IMAGE['number' + displayStr[0]] );
       $( '#time1' ).attr( 'src', IMAGE['number' + displayStr[1]] );
       $( '#time2' ).attr( 'src', IMAGE['number' + displayStr[2]] );
+}
+
+Board.prototype.displayMines = function(){
+  var displayStr = ('0' + this.minesLeft).slice(-3)
+      $( '#mine0' ).attr( 'src', IMAGE['number' + displayStr[0]] );
+      $( '#mine1' ).attr( 'src', IMAGE['number' + displayStr[1]] );
 }
 
 // Reveals neighbours of the clicked cell if they are not a mine or flagged
@@ -243,10 +251,14 @@ Cell.prototype.putFlag = function(){
   if (this.state == 3){
     this.state = 1;
     this.updateCell(IMAGE.blank);
+    board.minesLeft++;
+    board.displayMines();
   }
   else if (this.state == 1){
     this.state = 3;
     this.updateCell(IMAGE.flagged);
+    board.minesLeft--;
+    board.displayMines();
   }
 }
 
@@ -289,6 +301,10 @@ function loseGame(){
   board.revealMines();
   $('.imgface').attr('src', IMAGE.facedead);
   gameOver = true;
+}
+
+function changeSize(){
+
 }
 
 

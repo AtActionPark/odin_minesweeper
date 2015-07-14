@@ -64,10 +64,15 @@ img{
   float:left;
 }
 
-.size {
+.mines {
   position:absolute;
   top: 4px;
   left: 5px;
+  display:inline-block;
+  float:left;
+}
+
+.mines img{
   display:inline-block;
   float:left;
 }
