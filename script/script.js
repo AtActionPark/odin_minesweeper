@@ -46,10 +46,7 @@ var gameOver = false;
 var cellsOpened = 0;
 var timeOut;
 
-/*  Class Board
-    Board has a max number of rows and columns, as well as a 'grid',
-    an array of array of cells
-*/
+
 function Board(bsize){
   size = bsize;
   this.grid = [[Cell]];
@@ -83,7 +80,14 @@ Board.prototype.generateBoard = function(){
 
 // Generate  mines, if cell is already a mine, try another one
 Board.prototype.generateMines = function(){
-  for (var i = 0;i<size;i++){
+  var mines = 0;
+  if (size == 9)
+    mines = 9;
+  else if (size == 15)
+    mines = 35;
+  else if (size == 20)
+    mines = 99;
+  for (var i = 0;i<mines;i++){
     var mine = getRandomCell(size,size);
     if (this.grid[mine[0]][mine[1]].isMine)
       i-=1;
@@ -127,6 +131,7 @@ Board.prototype.revealMines = function(){
   }
 }
 
+//increments timePassed and display timer
 Board.prototype.updateTimer = function(){
   if(gameOver)
     return;
@@ -303,9 +308,6 @@ function loseGame(){
   gameOver = true;
 }
 
-function changeSize(){
-
-}
 
 
 //helper functions
@@ -353,5 +355,8 @@ function init(size){
 
 $(document).ready(function(){
   init(9);
-  
+});
+
+$(document).on('change', 'input[name="radioOptions"]:radio', function(){
+    init($('input[name="radioOptions"]:checked').val());
 });
