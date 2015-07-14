@@ -1,3 +1,6 @@
+/*  I shamelessly stole Donald's images and state var
+    @ https://github.com/donaldali/odin-js-jquery/tree/master/minesweeper
+*/
 var STATE = {
   blank: 1,
   opened: 2,
@@ -38,38 +41,48 @@ var IMAGE = {
 };
 
 var board;
+var size ;
 var gameOver = false;
 var cellsOpened = 0;
+var timeOut;
 
 /*  Class Board
     Board has a max number of rows and columns, as well as a 'grid',
     an array of array of cells
 */
-function Board(){
+function Board(bsize){
+  size = bsize;
   this.grid = [[Cell]];
-  this.rows = 9; 
-  this.columns = 9; 
   this.minesPositions = [];
+  this.timePassed = 0;
+  this.firstClick = false;
+  this.generateBoard();
+  this.generateMines();
+  this.updateNeighboursAdjacentMines();
+  this.render();
+  clearTimeout(timeOut);
+  this.displayTimer();
 }
 
 // Will create empty cells in the grid, and add them to the markup
 Board.prototype.generateBoard = function(){
-  for (var i = 0 ; i<this.rows ; i++){
+  for (var i = 0 ; i<size ; i++){
     this.grid.push([]);
-    for (var j = 0 ; j<this.columns ; j++){
+    for (var j = 0 ; j<size ; j++){
       var cell = new Cell([i,j]);
       cell.addCellToMarkup();
       this.grid[i][j] = cell;
     }
   }
-  $('.grid').width(this.rows*16);
-  $('.grid').height(this.columns*16);
+  $('.grid').width(size*16);
+  $('.grid').height(size*16);
+  $('.minesweeper').width(size*16);
 }
 
-// Generate 9 mines, if cell is already a mine, try another one
+// Generate  mines, if cell is already a mine, try another one
 Board.prototype.generateMines = function(){
-  for (var i = 0;i<9;i++){
-    var mine = getRandomCell(9,9);
+  for (var i = 0;i<size;i++){
+    var mine = getRandomCell(size,size);
     if (this.grid[mine[0]][mine[1]].isMine)
       i-=1;
     else{
@@ -102,12 +115,29 @@ Board.prototype.render = function(){
 
 // Reveal all unrevealed mines when game Over
 Board.prototype.revealMines = function(){
-  for (var i = 0 ; i<this.rows ; i++){
-    for (var j = 0 ; j<this.columns ; j++){
+  for (var i = 0 ; i<size ; i++){
+    for (var j = 0 ; j<size ; j++){
       if (this.grid[i][j].isMine && this.grid[i][j].state == 1)
         this.grid[i][j].updateCell(IMAGE.minerevealed);
+      else if (!this.grid[i][j].isMine && this.grid[i][j].state == 3)
+        this.grid[i][j].updateCell(IMAGE.minemisflagged);
     }
   }
+}
+
+Board.prototype.updateTimer = function(){
+  if(gameOver)
+    return;
+  this.timePassed++;
+  timeOut = setTimeout(this.updateTimer.bind(this), 1000 );
+  this.displayTimer();
+}
+
+Board.prototype.displayTimer = function(){
+  var displayStr = ('00' + Math.abs(this.timePassed) ).slice(-3);
+      $( '#time0' ).attr( 'src', IMAGE['number' + displayStr[0]] );
+      $( '#time1' ).attr( 'src', IMAGE['number' + displayStr[1]] );
+      $( '#time2' ).attr( 'src', IMAGE['number' + displayStr[2]] );
 }
 
 // Reveals neighbours of the clicked cell if they are not a mine or flagged
@@ -228,11 +258,15 @@ Cell.prototype.updateCell = function(img){
 //keep track of the nb of cells opened, for checking win condition
 Cell.prototype.updateCellsOpened = function(){
   cellsOpened++;
-  if(cellsOpened === 9*9-9)
+  if(cellsOpened === size*size-size)
     winGame();
 }
 
 function clicked(type, cell){
+  if (!board.firstClick){
+    board.firstClick = true;
+    timeOut = setTimeout(board.updateTimer(), 1000 );
+  }
   if(gameOver)
     return;
   switch (type){
@@ -246,12 +280,14 @@ function clicked(type, cell){
 }
 
 function winGame(){
-  console.log('won');
+  $('.imgface').attr('src', IMAGE.facewin);
+  gameOver = true;
 }
 
 function loseGame(){
   console.log('lost');
   board.revealMines();
+  $('.imgface').attr('src', IMAGE.facedead);
   gameOver = true;
 }
 
@@ -266,21 +302,14 @@ function getRandomCell(maxWidth,maxHeight){
 }
 
 function isPositionValid(position){
-  return position[0]>=0 && position[0]<9 && position[1]>=0 && position[1]<9;
+  return position[0]>=0 && position[0]<size && position[1]>=0 && position[1]<size;
 }
 
-
-
-$(document).ready(function(){
-  board = new Board();
-  board.generateBoard();
-  board.generateMines();
-  board.updateNeighboursAdjacentMines();
-  board.render();
-
+//listen for left and middle click on cells
+function listenClick(){
   $('.cell').mousedown(function(event) {
-    var x = $(this)[0].classList[1].charAt(0);
-    var y = $(this)[0].classList[1].charAt(2);
+    var x = $(this)[0].classList[1].match(/^\d+/);
+    var y = $(this)[0].classList[1].match(/\d+$/);
     var cell = board.grid[x][y];
     switch (event.which) {
         case 1:
@@ -293,4 +322,20 @@ $(document).ready(function(){
            break;
     }
   });
+}
+
+function init(size){
+  $('.grid').empty();
+  gameOver = false;
+  cellsOpened = 0;
+  board = new Board(size);
+  listenClick();
+  $('.imgface').attr('src', IMAGE.facesmile);
+  
+}
+
+
+$(document).ready(function(){
+  init(9);
+  
 });

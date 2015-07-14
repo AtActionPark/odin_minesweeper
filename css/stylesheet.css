@@ -3,6 +3,10 @@
   padding:0;
 }
 
+img{
+  
+}
+
 .container{
   width:600px;
   margin:0 auto;
@@ -11,8 +15,22 @@
   text-align: center;
 }
 
-.grid{
+.minesweeper{
   margin:50px auto;
+  background-color: #c0c0c0;
+  border-top: 2px solid #fcfcfc;
+  border-left: 2px solid #fcfcfc;
+  border-bottom: 2px solid #777;
+  border-right: 2px solid #777;
+  padding: 6px;
+}
+
+.grid{
+  border-top: 2px solid #777;
+  border-left: 2px solid #777;
+  border-bottom: 2px solid #fcfcfc;
+  border-right: 2px solid #fcfcfc;
+  margin:0 auto;
   content:"";
   clear:both;
 }
@@ -21,6 +39,43 @@
   width:16px;
   height:16px;
   float:left;
+}
+
+.top{
+  margin:0 auto;
+  position: relative;
+  padding: 3px 5px 0px 5px;
+  margin-bottom: 6px;
+  border-top: 2px solid #777;
+  border-left: 2px solid #777;
+  border-bottom: 2px solid #fcfcfc;
+  border-right: 2px solid #fcfcfc;
+  overflow: auto;
+}
+
+.timer{
+  position:absolute;
+  top: 4px;
+  right: 5px;
+}
+
+.timer img{
+  display:inline-block;
+  float:left;
+}
+
+.size {
+  position:absolute;
+  top: 4px;
+  left: 5px;
+  display:inline-block;
+  float:left;
+}
+
+.face{
+  position:relative;
+  margin-left:50%;
+  margin-right:50%;
 }
 
 footer{
