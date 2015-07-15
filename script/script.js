@@ -203,7 +203,8 @@ Cell.prototype.listNeighbourPositions = function(){
   for (var i = -1;i<=1;i++){
     for (var j = -1;j<=1;j++){
       var pos = [this.position[0] +i,this.position[1] +j];
-      if (isPositionValid(pos))
+      // do not push initial cell in list
+      if (isPositionValid(pos) && !(i == 0 && j == 0))
         list.push(pos);
     }
   }
