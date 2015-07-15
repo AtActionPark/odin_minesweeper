@@ -16,7 +16,8 @@ img{
 }
 
 .minesweeper{
-  margin:50px auto;
+  margin:10px auto;
+  margin-top:40px;
   background-color: #c0c0c0;
   border-top: 2px solid #fcfcfc;
   border-left: 2px solid #fcfcfc;
@@ -84,5 +85,6 @@ img{
 }
 
 footer{
+  margin-top:10px;
   clear:both;
 }
